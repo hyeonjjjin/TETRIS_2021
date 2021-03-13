@@ -1,5 +1,5 @@
 ﻿#include "pch.h"
-#include <iostream>
+#include "PrintTemp.h"
 #include <iostream>
 #include <time.h>//time 함수
 #include <Windows.h>// Sleep 함수
@@ -9,18 +9,6 @@
 #define g_xMax 42
 #define g_yMin 7
 #define g_yMax 26
-
-
-//원하는 좌표로 커서 옮기기 
-void gotoxy(int x, int y)
-{
-	COORD pos = { x,y };
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
-}
-
-//shape, direc //level, score 구조체
-struct tempInfo { int shape; int direc; }; typedef tempInfo;
-struct gradeInfo { int level; int score; }; typedef gradeInfo;
 
 int ground[44][27] = { 0 };
 
@@ -68,7 +56,7 @@ void PrintGameStart() {
 }
 
 //이미 내려놓은 도형 ■로 출력
-void ColorSquare() {
+void ColoringTemp() {
 	for (int j = g_yMin; j <= g_yMax; j++)
 	{
 		for (int i = g_xMin; i <= g_xMax; i += 2)
@@ -113,10 +101,13 @@ void SetGameGround(tempInfo next, gradeInfo grade) {
 	
 }
 
+//떨굴 도형 모양, 방향 설정
 void setTempInfo(tempInfo *temp) {
 	srand(time(NULL));
 	temp->shape = rand() % 7;
-	temp->direc = rand() % 4;
+	if (temp->shape < 6) temp->direc = rand() % 2;
+	else if (temp->shape == 6) temp->direc = 0;
+	else temp->direc = rand() % 4;
 }
 
 int main()
@@ -129,7 +120,7 @@ int main()
 	gradeInfo grade = { 0,0 };
 	setTempInfo(&next);
 	SetGameGround(next,grade);
-	
+	PrintTemp(next, 52, 11);
 
 	getchar();
 }
