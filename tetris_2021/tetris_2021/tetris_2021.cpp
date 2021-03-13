@@ -10,6 +10,9 @@
 #define g_yMin 7
 #define g_yMax 26
 
+#define next_x 52
+#define next_y 11
+
 int ground[44][27] = { 0 };
 
 void PrintGameStart() {
@@ -105,8 +108,8 @@ void SetGameGround(tempInfo next, gradeInfo grade) {
 void setTempInfo(tempInfo *temp) {
 	srand(time(NULL));
 	temp->shape = rand() % 7;
-	if (temp->shape < 6) temp->direc = rand() % 2;
-	else if (temp->shape == 6) temp->direc = 0;
+	if (temp->shape < 3) temp->direc = rand() % 2;
+	else if (temp->shape == 3) temp->direc = 0;
 	else temp->direc = rand() % 4;
 }
 
@@ -120,7 +123,12 @@ int main()
 	gradeInfo grade = { 0,0 };
 	setTempInfo(&next);
 	SetGameGround(next,grade);
-	PrintTemp(next, 52, 11);
+
+	//next 예쁜 위치에 출력하기 위한 if문
+	if((next.shape+next.direc)%2==1)
+		PrintTemp(next, next_x+1, next_y);
+	else PrintTemp(next, next_x, next_y);
 
 	getchar();
+	
 }
