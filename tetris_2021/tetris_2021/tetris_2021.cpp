@@ -331,11 +331,27 @@ void check_input(tempInfo temp,locationInfo location,int shape, int* direc, int*
 }*/
 
 
+void CursorView(char show) {
+	HANDLE hConsole;
+	CONSOLE_CURSOR_INFO ConsoleCursor;
+
+	hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+	ConsoleCursor.bVisible = show;
+	ConsoleCursor.dwSize = 1;
+
+	SetConsoleCursorInfo(hConsole, &ConsoleCursor);
+}
+
+
+	
+
 int main()
 {
 	//게임창 세팅
 	system("mode con cols=100 lines=40 | title TETRIS"); // cols:가로 lines:세로
 	PrintGameStart();
+	CursorView(false); // 커서 숨기기
 
 	//초기화
 	minoInfo current = { 0,0,center_x, center_y};
