@@ -135,9 +135,15 @@ void SetMinoInfo(minoInfo *mino) {
 	else mino->direc = rand() % 4;
 }
 
+void CheckCanAction(minoInfo mino) {
+
+}
+
 //방향키 입력에 따라 동작
-void CheckKey(minoInfo* mino, locationInfo* location, int* speedUp) {
+void CheckKeyAndAction(minoInfo* mino, locationInfo* location, int* speedUp) {
 	int input = 0;
+	int canMove = 0;
+	int rotateTempDirec = 0;
 	//방향 키 입력 받아오기
 	if (_kbhit())
 	{
@@ -155,9 +161,11 @@ void CheckKey(minoInfo* mino, locationInfo* location, int* speedUp) {
 			if (location->left_x >= 24)
 			{
 				//지우기, location 정보 새로고침
-				location->left_x -= 2;
-				location->right_x -= 2;
-				mino->y -= 2;
+				//location->left_x -= 2;
+				//location->right_x -= 2;
+				mino->x -= 2;
+				//canMove = UpdateLocation(*mino, location);
+				if(UpdateLocation(*mino, location) < 0) mino->x += 2;
 				/*
 				uaaaa = shift_l(shape, *direc, *x, y, max_x, background);//지우는거 새로 만들어야할듯
 				if (uaaaa > 0) {
@@ -171,9 +179,10 @@ void CheckKey(minoInfo* mino, locationInfo* location, int* speedUp) {
 			if (location->right_x <= 42)//얘도
 			{
 				//지우기, location 정보 새로고침
-				location->left_x += 2;
-				location->right_x += 2;
+				//location->left_x += 2;
+				//location->right_x += 2;
 				mino->x += 2;
+				if (UpdateLocation(*mino, location) < 0) mino->x -= 2;
 				/*
 				uaaaa = shift_r(shape, *direc, *x, y, max_x, background);
 				if (uaaaa > 0) {
@@ -186,10 +195,12 @@ void CheckKey(minoInfo* mino, locationInfo* location, int* speedUp) {
 			*speedUp = 5;
 			break;
 		case k_rotate:
-			if (mino->shape < 3) mino->direc = (mino->direc+1) % 2;
+			rotateTempDirec = mino->direc;
+			if (mino->shape < 3) mino->direc = ((mino->direc) +1) % 2;
 			else if (mino->shape == 3) mino->direc = 0;
-			else mino->direc = (mino->direc + 1) % 4;
-			system("cls");
+			else mino->direc = ((mino->direc) + 1) % 4;
+			if (UpdateLocation(*mino, location) < 0) mino->direc = rotateTempDirec;
+			
 			
 			/*
 			switch (shape)
@@ -229,6 +240,8 @@ void CheckKey(minoInfo* mino, locationInfo* location, int* speedUp) {
 			break;//돌았ㅇ을때 겹치는게 없으면 돌고 아님 못돌고
 			*/
 		}
+
+		system("cls");
 		PrintMino(*mino, location);
 	}
 }
@@ -344,7 +357,7 @@ int main()
 	int speedUp = 0;
 	while (1) {
 
-		CheckKey(&current, &location, &speedUp);
+		CheckKeyAndAction(&current, &location, &speedUp);
 		SetGameGround(next, grade, &location);
 		//PrintMino(current, &location);
 	}
