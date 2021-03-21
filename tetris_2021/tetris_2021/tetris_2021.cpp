@@ -94,7 +94,7 @@ void SetGameGround(minoInfo next, gradeInfo grade, locationInfo* location) {
 	//next 예쁜 위치에 출력하기 위한 if문
 	if ((next.shape + next.direc) % 2 == 1)	next.x = 53;
 	else next.x = 52;
-	PrintTemp(next, location);
+	PrintMino(next, location);
 }
 
 //이미 내려놓은 도형 ■로 출력
@@ -136,7 +136,7 @@ void SetMinoInfo(minoInfo *mino) {
 }
 
 //방향키 입력에 따라 동작
-void CheckKey(locationInfo* location, int* speedUp) {
+void CheckKey(minoInfo* mino, locationInfo* location, int* speedUp) {
 	int input = 0;
 	//방향 키 입력 받아오기
 	if (_kbhit())
@@ -157,7 +157,7 @@ void CheckKey(locationInfo* location, int* speedUp) {
 				//지우기, location 정보 새로고침
 				location->left_x -= 2;
 				location->right_x -= 2;
-
+				mino->y -= 2;
 				/*
 				uaaaa = shift_l(shape, *direc, *x, y, max_x, background);//지우는거 새로 만들어야할듯
 				if (uaaaa > 0) {
@@ -173,6 +173,7 @@ void CheckKey(locationInfo* location, int* speedUp) {
 				//지우기, location 정보 새로고침
 				location->left_x += 2;
 				location->right_x += 2;
+				mino->x += 2;
 				/*
 				uaaaa = shift_r(shape, *direc, *x, y, max_x, background);
 				if (uaaaa > 0) {
@@ -185,8 +186,11 @@ void CheckKey(locationInfo* location, int* speedUp) {
 			*speedUp = 5;
 			break;
 		case k_rotate:
-			//	system("cls");
+			if (mino->shape < 3) mino->direc = (mino->direc+1) % 2;
+			else if (mino->shape == 3) mino->direc = 0;
+			else mino->direc = (mino->direc + 1) % 4;
 			system("cls");
+			
 			/*
 			switch (shape)
 			{
@@ -225,6 +229,7 @@ void CheckKey(locationInfo* location, int* speedUp) {
 			break;//돌았ㅇ을때 겹치는게 없으면 돌고 아님 못돌고
 			*/
 		}
+		PrintMino(*mino, location);
 	}
 }
 
@@ -311,102 +316,7 @@ void check_input(tempInfo temp,locationInfo location,int shape, int* direc, int*
 
 	}
 }*/
-/*
-void SetCurrentLocation(int tempInfoIndex,locationInfo* location) {
-	switch (tempInfoIndex) {
-		//min_x = x-2
-	case BarHoriz:
-	case ZLHoriz:
-	case ZRHoriz:
-	case ChairL0:
-	case ChairL2:
-	case ChairR0:
-	case ChairR2:
 
-	//case BarHoriz:
-		//gotoxy(x - 2, y); printf("□□□□"); break;
-	case BarVertical:
-		for (int i = -1; i < 3; i++) { gotoxy(x, y + i); printf("□"); }break;
-
-	case ZLVertical:
-		gotoxy(x + 2, y - 1); printf("□");
-		gotoxy(x, y); printf("□□");
-		gotoxy(x, y + 1); printf("□");
-		break;
-	//case ZLHoriz:
-		//gotoxy(x - 2, y); printf("□□");
-		//gotoxy(x, y + 1); printf("□□");
-		//break;
-	case ZRVertical:
-		gotoxy(x, y - 1); printf("□");
-		gotoxy(x, y); printf("□□");
-		gotoxy(x + 2, y + 1); printf("□");
-		break;
-	//case ZRHoriz:
-		//gotoxy(x, y); printf("□□");
-		//gotoxy(x - 2, y + 1); printf("□□");
-		//break;
-	case Square:
-		gotoxy(x, y); printf("□□");
-		gotoxy(x, y + 1); printf("□□");
-		break;
-	//case ChairL0:
-		//gotoxy(x - 2, y); printf("□□□");
-		//gotoxy(x - 2, y + 1); printf("□");
-		//break;
-	case ChairL1:
-		gotoxy(x, y - 1); printf("□□");
-		gotoxy(x + 2, y); printf("□");
-		gotoxy(x + 2, y + 1); printf("□");
-		break;
-	//case ChairL2:
-	//	gotoxy(x + 2, y); printf("□");
-	//	gotoxy(x - 2, y + 1); printf("□□□");
-	//	break;
-	case ChairL3:
-		gotoxy(x, y - 1); printf("□");
-		gotoxy(x, y); printf("□");
-		gotoxy(x, y + 1); printf("□□");
-		break;
-	case ChairR0:
-		gotoxy(x - 2, y); printf("□□□");
-		gotoxy(x + 2, y + 1); printf("□");
-		break;
-	case ChairR1:
-		gotoxy(x + 2, y - 1); printf("□");
-		gotoxy(x + 2, y); printf("□");
-		gotoxy(x, y + 1); printf("□□");
-		break;
-	case ChairR2:
-		gotoxy(x - 2, y); printf("□");
-		gotoxy(x - 2, y + 1); printf("□□□");
-		break;
-	case ChairR3:
-		gotoxy(x, y - 1); printf("□□");
-		gotoxy(x, y); printf("□");
-		gotoxy(x, y + 1); printf("□");
-		break;
-	case T0:
-		gotoxy(x - 2, y); printf("□□□");
-		gotoxy(x, y + 1); printf("□");
-		break;
-	case T1:
-		gotoxy(x, y - 1); printf("□");
-		gotoxy(x - 2, y); printf("□□");
-		gotoxy(x, y + 1); printf("□");
-		break;
-	case T2:
-		gotoxy(x, y - 1); printf("□");
-		gotoxy(x - 2, y); printf("□□□");
-		break;
-	case T3:
-		gotoxy(x, y - 1); printf("□");
-		gotoxy(x, y); printf("□□");
-		gotoxy(x, y + 1); printf("□");
-		break;
-	}
-}
-*/
 
 int main()
 {
@@ -423,18 +333,21 @@ int main()
 	int currentCenterY = 7;
 
 	//게임 화면 세팅
-	//srand(time(NULL));
+	srand(time(NULL));
 	SetMinoInfo(&next);
 	SetGameGround(next,grade, &location);
 	SetMinoInfo(&current);
-	PrintTemp(current, &location);
+	PrintMino(current, &location);
 
 	gotoxy(30, 17);
 	printf("minx= %d maxx= %d miny= %d maxy= %d", location.left_x, location.right_x, location.bottom_y, location.top_y);
-	//while (1) {
+	int speedUp = 0;
+	while (1) {
 
-
-	//}
+		CheckKey(&current, &location, &speedUp);
+		SetGameGround(next, grade, &location);
+		//PrintMino(current, &location);
+	}
 	getchar();
 	
 }

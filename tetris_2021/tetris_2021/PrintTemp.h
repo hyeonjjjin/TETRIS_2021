@@ -20,7 +20,7 @@ void gotoxy(int x, int y)
 }
 
 //현재 좌표를 받아서 화면에 도형 출력, location 정보 set
-void PrintTemp(minoInfo mino, locationInfo* location) {
+void PrintMino(minoInfo mino, locationInfo* location) {
 	int x = mino.x; int y = mino.y;
 	int minoInfoIndex = mino.shape+ mino.direc;
 	switch (minoInfoIndex) {
