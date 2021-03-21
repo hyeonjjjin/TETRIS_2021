@@ -92,10 +92,9 @@ void SetGameGround(minoInfo next, gradeInfo grade, locationInfo* location) {
 	gotoxy(52, 8);
 	printf("NEXT");
 	//next 예쁜 위치에 출력하기 위한 if문
-	if ((next.shape + next.direc) % 2 == 1)
-		PrintTemp(next, next_x + 1, next_y, location);
-	else PrintTemp(next, next_x, next_y, location);
-	
+	if ((next.shape + next.direc) % 2 == 1)	next.x = 53;
+	else next.x = 52;
+	PrintTemp(next, location);
 }
 
 //이미 내려놓은 도형 ■로 출력
@@ -137,7 +136,7 @@ void SetMinoInfo(minoInfo *mino) {
 }
 
 //방향키 입력에 따라 동작
-void CheckKey(locationInfo* location) {
+void CheckKey(locationInfo* location, int* speedUp) {
 	int input = 0;
 	//방향 키 입력 받아오기
 	if (_kbhit())
@@ -183,11 +182,12 @@ void CheckKey(locationInfo* location) {
 			}
 			break;
 		case k_down:
-			*input_down = 5;
+			*speedUp = 5;
 			break;
 		case k_rotate:
 			//	system("cls");
 			system("cls");
+			/*
 			switch (shape)
 			{
 			case 0:
@@ -223,6 +223,7 @@ void CheckKey(locationInfo* location) {
 			else
 				(*direc)++;//돌리면 멈춘다,,, 지우기 해야함
 			break;//돌았ㅇ을때 겹치는게 없으면 돌고 아님 못돌고
+			*/
 		}
 	}
 }
@@ -414,8 +415,8 @@ int main()
 	PrintGameStart();
 
 	//초기화
-	minoInfo current = { 0,0 };
-	minoInfo next = { 0,0 };
+	minoInfo current = { 0,0,center_x, center_y};
+	minoInfo next = { 0,0,next_x,next_y };
 	gradeInfo grade = { 0,0 };
 	locationInfo location = { 0,0,0,0 };
 	int currentCenterX = 42;
@@ -426,7 +427,7 @@ int main()
 	SetMinoInfo(&next);
 	SetGameGround(next,grade, &location);
 	SetMinoInfo(&current);
-	PrintTemp(current, center_x, center_y, &location);
+	PrintTemp(current, &location);
 
 	gotoxy(30, 17);
 	printf("minx= %d maxx= %d miny= %d maxy= %d", location.left_x, location.right_x, location.bottom_y, location.top_y);

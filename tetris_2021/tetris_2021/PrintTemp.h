@@ -3,7 +3,7 @@
 #include <Windows.h>
 
 //shape, direc //level, score 구조체
-struct minoInfo { int shape; int direc; }; typedef minoInfo;
+struct minoInfo { int shape; int direc; int x; int y; }; typedef minoInfo;
 struct gradeInfo { int level; int score; }; typedef gradeInfo;
 struct locationInfo { int left_x; int right_x; int bottom_y; int top_y; } typedef locationInfo;
 
@@ -20,7 +20,8 @@ void gotoxy(int x, int y)
 }
 
 //현재 좌표를 받아서 화면에 도형 출력, location 정보 set
-void PrintTemp(minoInfo mino, int x, int y, locationInfo* location) {
+void PrintTemp(minoInfo mino, locationInfo* location) {
+	int x = mino.x; int y = mino.y;
 	int minoInfoIndex = mino.shape+ mino.direc;
 	switch (minoInfoIndex) {
 	case BarHoriz:
