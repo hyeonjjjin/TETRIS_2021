@@ -135,15 +135,9 @@ void SetMinoInfo(minoInfo *mino) {
 	else mino->direc = rand() % 4;
 }
 
-void CheckCanAction(minoInfo mino) {
-
-}
-
 //방향키 입력에 따라 동작
 void CheckKeyAndAction(minoInfo* mino, locationInfo* location, int* speedUp) {
 	int input = 0;
-	int canMove = 0;
-	int rotateTempDirec = 0;
 	//방향 키 입력 받아오기
 	if (_kbhit())
 	{
@@ -161,176 +155,33 @@ void CheckKeyAndAction(minoInfo* mino, locationInfo* location, int* speedUp) {
 			if (location->left_x >= 24)
 			{
 				//지우기, location 정보 새로고침
-				//location->left_x -= 2;
-				//location->right_x -= 2;
 				mino->x -= 2;
-				//canMove = UpdateLocation(*mino, location);
 				if(UpdateLocation(*mino, location) < 0) mino->x += 2;
-				/*
-				uaaaa = shift_l(shape, *direc, *x, y, max_x, background);//지우는거 새로 만들어야할듯
-				if (uaaaa > 0) {
-					*x -= spacee;
-					system("cls");
-				}
-				*/
 			}
 			break;
 		case k_right:
 			if (location->right_x <= 42)//얘도
-			{
-				//지우기, location 정보 새로고침
-				//location->left_x += 2;
-				//location->right_x += 2;
+			{   //지우기, location 정보 새로고침
 				mino->x += 2;
 				if (UpdateLocation(*mino, location) < 0) mino->x -= 2;
-				/*
-				uaaaa = shift_r(shape, *direc, *x, y, max_x, background);
-				if (uaaaa > 0) {
-					*x += spacee;
-					system("cls");
-				}*/
 			}
 			break;
 		case k_down:
-			*speedUp = 5;
-			break;
+			*speedUp = 5; break;
 		case k_rotate:
-			rotateTempDirec = mino->direc;
+			int rotateTempDirec = mino->direc;
 			if (mino->shape < 3) mino->direc = ((mino->direc) +1) % 2;
 			else if (mino->shape == 3) mino->direc = 0;
 			else mino->direc = ((mino->direc) + 1) % 4;
+
 			if (UpdateLocation(*mino, location) < 0) mino->direc = rotateTempDirec;
-			
-			
-			/*
-			switch (shape)
-			{
-			case 0:
-				delete_bar(shape, *direc, *x, y, background, 0);
-
-				break;
-			case 1:
-				delete_a1(shape, *direc, *x, y, background, 0);
-
-				break;
-			case 2:
-				delete_a2(shape, *direc, *x, y, background, 0);
-
-				break;
-			case 3:
-				delete_square(shape, *direc, *x, y, background, 0);
-
-				break;
-			case 4:
-				delete_b1(*direc, *x, y, background, 0);
-
-				break;
-			case 5:
-				delete_b2(*direc, *x, y, background, 0);
-
-				break;
-			case 6:
-				delete_o(*direc, *x, y, background, 0);
-				break;
-			}
-			if (*direc == 3)
-				*direc = 0;
-			else
-				(*direc)++;//돌리면 멈춘다,,, 지우기 해야함
-			break;//돌았ㅇ을때 겹치는게 없으면 돌고 아님 못돌고
-			*/
 		}
-
 		system("cls");
 		PrintMino(*mino, location);
 	}
 }
 
-/*
-void check_input(tempInfo temp,locationInfo location,int shape, int* direc, int* x, int y, int* max_x, int background[28][24], int* input_down, int flag_1, int flag_2)
-{
-	int input = 0;
-	int uaaaa = 0;
-	if (_kbhit())
-	{
-		input = _getch();
-		if (input == 224)
-		{
-			do {
-				input = _getch();
-			} while (input == 224);
-		}
-		switch (input)
-		{
-		case k_left:
-			//system("cls");
-			if (location.left_x >= 24)
-			{
-				uaaaa = shift_l(shape, *direc, *x, y, max_x, background);//지우는거 새로 만들어야할듯
-				if (uaaaa > 0) {
-					*x -= spacee;
-					system("cls");
-				}
-			}
-			break;
-		case k_right:
-			//	system("cls");
-			if (location.right_x <= 42)//얘도
-			{
-				uaaaa = shift_r(shape, *direc, *x, y, max_x, background);
-				if (uaaaa > 0) {
-					*x += spacee;
-					system("cls");
-				}
-			}
-			break;
-		case k_down:
-			*input_down = 5;
-			break;
-		case k_rotate:
-			//	system("cls");
-			system("cls");
-			switch (shape)
-			{
-			case 0:
-				delete_bar(shape, *direc, *x, y, background, 0);
-
-				break;
-			case 1:
-				delete_a1(shape, *direc, *x, y, background, 0);
-
-				break;
-			case 2:
-				delete_a2(shape, *direc, *x, y, background, 0);
-
-				break;
-			case 3:
-				delete_square(shape, *direc, *x, y, background, 0);
-
-				break;
-			case 4:
-				delete_b1(*direc, *x, y, background, 0);
-
-				break;
-			case 5:
-				delete_b2(*direc, *x, y, background, 0);
-
-				break;
-			case 6:
-				delete_o(*direc, *x, y, background, 0);
-				break;
-			}
-			if (*direc == 3)
-				*direc = 0;
-			else
-				(*direc)++;//돌리면 멈춘다,,, 지우기 해야함
-			break;//돌았ㅇ을때 겹치는게 없으면 돌고 아님 못돌고
-		}
-
-	}
-}*/
-
-
+//커서 숨기기 함수. 블로그에서 퍼왔어욘 >> https://seokjin2.tistory.com/50
 void CursorView(char show) {
 	HANDLE hConsole;
 	CONSOLE_CURSOR_INFO ConsoleCursor;
@@ -343,8 +194,6 @@ void CursorView(char show) {
 	SetConsoleCursorInfo(hConsole, &ConsoleCursor);
 }
 
-
-	
 
 int main()
 {
@@ -372,7 +221,6 @@ int main()
 	printf("minx= %d maxx= %d miny= %d maxy= %d", location.left_x, location.right_x, location.bottom_y, location.top_y);
 	int speedUp = 0;
 	while (1) {
-
 		CheckKeyAndAction(&current, &location, &speedUp);
 		SetGameGround(next, grade, &location);
 		//PrintMino(current, &location);
