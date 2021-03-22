@@ -16,7 +16,7 @@
 #define next_x 52
 #define next_y 11
 
-int ground[44][27] = { 0 };
+//int ground[44][27] = { 0 };
 enum Key { k_left=75, k_right=77, k_rotate=72, k_down=80 };
 
 //초기화면, tetris 출력
@@ -123,6 +123,10 @@ void PrintDropTemp() {
 				gotoxy(i, j);
 				printf("□");
 			}
+			else {
+				gotoxy(i, j);
+				printf("  ");
+			}
 		}
 	}
 }
@@ -152,16 +156,14 @@ void CheckKeyAndAction(minoInfo* mino, locationInfo* location, int* speedUp) {
 		switch (input)
 		{
 		case k_left:
-			if (location->left_x >= 24)
-			{
-				//지우기, location 정보 새로고침
+			if (location->left_x >= 24)	{//지우기, location 정보 새로고침
 				mino->x -= 2;
 				if(UpdateLocation(*mino, location) < 0) mino->x += 2;
+				
 			}
 			break;
 		case k_right:
-			if (location->right_x <= 42)//얘도
-			{   //지우기, location 정보 새로고침
+			if (location->right_x <= 42){ 
 				mino->x += 2;
 				if (UpdateLocation(*mino, location) < 0) mino->x -= 2;
 			}
@@ -176,8 +178,29 @@ void CheckKeyAndAction(minoInfo* mino, locationInfo* location, int* speedUp) {
 
 			if (UpdateLocation(*mino, location) < 0) mino->direc = rotateTempDirec;
 		}
-		system("cls");
-		PrintMino(*mino, location);
+		PrintDropTemp();
+		//system("cls");
+		//PrintMino(*mino, location);
+	}
+}
+
+//speed 에 맞춰서 일정 시간 단위로 mino 떨구기, down키에 따른 동작조건 필요
+void AutoDownMino(minoInfo* mino,locationInfo location, int* fixMino) {
+	int CheckColoringMino = 0;
+	if ((location.bottom_y < 26)) {//지우기, location 정보 새로고침
+		mino->y += 1;
+		//틀 이탈 or 내려놓은 도형과의 충돌 상황이라면 안내려!
+		CheckColoringMino = UpdateNewPosition(*mino);
+		if (UpdateLocation(*mino, &location) < 0 || CheckColoringMino < 0) {
+			mino->y -= 1;
+			*fixMino = 1;
+		}
+		//외의 경우 mino 하강 가능하므로 Array에서 이전 위치 지우기
+		else {
+			DeletePrevPosition_Down(*mino);
+			PrintDropTemp();
+			//PrintMino(*mino, &location);
+		}
 	}
 }
 
@@ -194,7 +217,6 @@ void CursorView(char show) {
 	SetConsoleCursorInfo(hConsole, &ConsoleCursor);
 }
 
-
 int main()
 {
 	//게임창 세팅
@@ -210,6 +232,8 @@ int main()
 	int currentCenterX = 42;
 	int currentCenterY = 7;
 
+	int fixMino = 0;
+
 	//게임 화면 세팅
 	srand(time(NULL));
 	SetMinoInfo(&next);
@@ -217,14 +241,16 @@ int main()
 	SetMinoInfo(&current);
 	PrintMino(current, &location);
 
-	gotoxy(30, 17);
-	printf("minx= %d maxx= %d miny= %d maxy= %d", location.left_x, location.right_x, location.bottom_y, location.top_y);
+	//gotoxy(30, 17);
+	//printf("minx= %d maxx= %d miny= %d maxy= %d", location.left_x, location.right_x, location.bottom_y, location.top_y);
+	
 	int speedUp = 0;
 	while (1) {
 		CheckKeyAndAction(&current, &location, &speedUp);
 		SetGameGround(next, grade, &location);
+		AutoDownMino(&current, location, &fixMino);
+		Sleep(500);
 		//PrintMino(current, &location);
 	}
-	getchar();
-	
+	getchar();	
 }
