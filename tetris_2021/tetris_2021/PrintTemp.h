@@ -295,6 +295,94 @@ void DeletePrevPosition_Left(minoInfo mino) {
 	}
 }
 
+//rotate 할 때 이전 위치 흔적지워
+void DeletePrevPosition_Left(minoInfo mino) {
+	int x = mino.x; int y = mino.y;
+	int minoInfoIndex = mino.shape + mino.direc;
+	switch (minoInfoIndex) {
+	case BarHoriz:
+		ground[x - 2][y] = 0;
+		ground[x + 2][y] = 0;
+		ground[x + 4][y] = 0;
+		break;
+	case BarVertical:
+		ground[x][y-1] = 0;
+		ground[x][y+1] = 0;
+		ground[x][y+2] = 0;
+		break;
+	case ZLVertical:
+		ground[x+2][y - 1] = 0;
+		ground[x+2][y] = 0;
+		break;
+	case ZLHoriz:
+		ground[x-2][y] = 0;
+		ground[x+2][y + 1] = 0;
+		break;
+	case ZRVertical:
+		ground[x][y - 1] = 0;
+		ground[x+2][y + 1] = 0;
+		break;
+	case ZRHoriz:
+		ground[x-2][y + 1] = 0;
+		ground[x][y + 1] = 0;
+		break;
+	case ChairL0:
+		gotoxy(x - 2, y); printf("□□□");
+		gotoxy(x - 2, y + 1); printf("□");
+		break;
+	case ChairL1:
+		gotoxy(x, y - 1); printf("□□");
+		gotoxy(x + 2, y); printf("□");
+		gotoxy(x + 2, y + 1); printf("□");
+		break;
+	case ChairL2:
+
+		gotoxy(x + 2, y); printf("□");
+		gotoxy(x - 2, y + 1); printf("□□□");
+		break;
+	case ChairL3:
+		gotoxy(x, y - 1); printf("□");
+		gotoxy(x, y); printf("□");
+		gotoxy(x, y + 1); printf("□□");
+		break;
+	case ChairR0:
+		gotoxy(x - 2, y); printf("□□□");
+		gotoxy(x + 2, y + 1); printf("□");
+		break;
+	case ChairR1:
+		gotoxy(x + 2, y - 1); printf("□");
+		gotoxy(x + 2, y); printf("□");
+		gotoxy(x, y + 1); printf("□□");
+		break;
+	case ChairR2:
+		gotoxy(x - 2, y); printf("□");
+		gotoxy(x - 2, y + 1); printf("□□□");
+		break;
+	case ChairR3:
+		gotoxy(x, y - 1); printf("□□");
+		gotoxy(x, y); printf("□");
+		gotoxy(x, y + 1); printf("□");
+		break;
+	case T0:
+		gotoxy(x - 2, y); printf("□□□");
+		gotoxy(x, y + 1); printf("□");
+		break;
+	case T1:
+		gotoxy(x, y - 1); printf("□");
+		gotoxy(x - 2, y); printf("□□");
+		gotoxy(x, y + 1); printf("□");
+		break;
+	case T2:
+		gotoxy(x, y - 1); printf("□");
+		gotoxy(x - 2, y); printf("□□□");
+		break;
+	case T3:
+		gotoxy(x, y - 1); printf("□");
+		gotoxy(x, y); printf("□□");
+		gotoxy(x, y + 1); printf("□");
+		break;
+	}
+}
 
 //현재 좌표를 받아서 화면에 도형 출력, location set 분리
 void PrintMino(minoInfo mino, locationInfo* location) {
