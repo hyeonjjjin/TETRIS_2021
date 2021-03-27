@@ -113,7 +113,7 @@ void ColoringTemp() {
 }
 
 //내려가는 도형 □로 출력
-void PrintDropTemp() {
+void PrintCurrentMino() {
 	for (int j = g_yMin; j <= g_yMax; j++)
 	{
 		for (int i = g_xMin; i <= g_xMax; i += 2)
@@ -158,8 +158,10 @@ void CheckKeyAndAction(minoInfo* mino, locationInfo* location, int* speedUp) {
 		case k_left:
 			if (location->left_x >= 24)	{//지우기, location 정보 새로고침
 				mino->x -= 2;
-				if(UpdateLocation(*mino, location) < 0) mino->x += 2;
-				
+				//틀 이탈 or 내려놓은 도형과의 충돌 상황이라면 안내려!
+				int CheckColoringMino = UpdateNewPosition(*mino);
+				if(UpdateLocation(*mino, location) < 0 || CheckColoringMino < 0) mino->x += 2;
+				else DeletePrevPosition_Left(*mino);
 			}
 			break;
 		case k_right:
@@ -178,7 +180,7 @@ void CheckKeyAndAction(minoInfo* mino, locationInfo* location, int* speedUp) {
 
 			if (UpdateLocation(*mino, location) < 0) mino->direc = rotateTempDirec;
 		}
-		PrintDropTemp();
+		PrintCurrentMino();
 		//system("cls");
 		//PrintMino(*mino, location);
 	}
@@ -198,7 +200,7 @@ void AutoDownMino(minoInfo* mino,locationInfo location, int* fixMino) {
 		//외의 경우 mino 하강 가능하므로 Array에서 이전 위치 지우기
 		else {
 			DeletePrevPosition_Down(*mino);
-			PrintDropTemp();
+			PrintCurrentMino();
 			//PrintMino(*mino, &location);
 		}
 	}
@@ -240,7 +242,7 @@ int main()
 	SetGameGround(next,grade, &location);
 	SetMinoInfo(&current);
 	PrintMino(current, &location);
-
+	UpdateLocation(current, &location);
 	//gotoxy(30, 17);
 	//printf("minx= %d maxx= %d miny= %d maxy= %d", location.left_x, location.right_x, location.bottom_y, location.top_y);
 	

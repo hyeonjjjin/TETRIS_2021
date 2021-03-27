@@ -216,6 +216,85 @@ void DeletePrevPosition_Down(minoInfo mino) {
 	}
 }
 
+//left 이동할 때 이전 위치 흔적지워
+void DeletePrevPosition_Left(minoInfo mino) {
+	int x = mino.x; int y = mino.y;
+	int minoInfoIndex = mino.shape + mino.direc;
+	switch (minoInfoIndex) {
+	case BarHoriz:
+		ground[x+6][y] = 0; break;
+	case BarVertical:
+		for (int i = -1; i < 3; i++) ground[x + 2][y+i] = 0;
+		break;
+	case ZLVertical:
+		ground[x + 4][y -1] = 0; 
+		ground[x + 4][y] = 0;
+		ground[x + 2][y + 1] = 0;
+		break;
+	case ZLHoriz:
+		ground[x + 2][y] = 0;
+		ground[x + 4][y + 1] = 0;
+		break;
+	case ZRVertical:
+		ground[x + 2][y-1] = 0;
+		ground[x + 4][y] = 0;
+		ground[x + 4][y+1] = 0;
+		break;
+	case ZRHoriz:
+	case T0:
+		ground[x + 4][y] = 0;
+		ground[x + 2][y + 1] = 0;
+		break;
+	case Square:
+	case ChairR0:
+		ground[x + 4][y] = 0;
+		ground[x + 4][y+1] = 0;
+		break;
+	case ChairL0:
+		ground[x + 4][y] = 0;
+		ground[x][y+1] = 0;
+		break;
+	case ChairL1:
+	case ChairR1:
+		ground[x + 4][y-1] = 0;
+		ground[x + 4][y] = 0;
+		ground[x + 4][y+1] = 0;
+		break;
+	case ChairL2:
+		ground[x + 4][y] = 0;
+		ground[x + 4][y+1] = 0;
+		break;
+	case ChairL3:
+		ground[x + 2][y-1] = 0;
+		ground[x + 2][y] = 0;
+		ground[x + 4][y+1] = 0;
+		break;
+	case ChairR2:
+		ground[x][y] = 0;
+		ground[x + 4][y+1] = 0;
+		break;
+	case ChairR3:
+		ground[x + 4][y-1] = 0;
+		ground[x + 2][y] = 0;
+		ground[x + 2][y+1] = 0;
+		break;
+	case T1:
+		ground[x + 2][y-1] = 0;
+		ground[x + 2][y] = 0;
+		ground[x + 2][y+1] = 0;
+		break;
+	case T2:
+		ground[x + 2][y-1] = 0;
+		ground[x + 4][y] = 0;
+		break;
+	case T3:
+		ground[x + 2][y-1] = 0;
+		ground[x + 4][y] = 0;
+		ground[x + 2][y+1] = 0;
+		break;
+	}
+}
+
 
 //현재 좌표를 받아서 화면에 도형 출력, location set 분리
 void PrintMino(minoInfo mino, locationInfo* location) {
