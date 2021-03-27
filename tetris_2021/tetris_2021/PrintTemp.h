@@ -211,7 +211,7 @@ void DeletePrevPosition_Down(minoInfo mino) {
 		ground[x][y - 2] = 0; ground[x + 2][y] = 0;
 		break;
 	case ChairR1:
-		ground[x][y - 2] = 0; ground[x][y] = 0;
+		ground[x+2][y - 2] = 0; ground[x][y] = 0;
 		break;
 	case ChairR2:
 		ground[x - 2][y-1] = 0; ground[x][y] = 0; ground[x+2][y] = 0;

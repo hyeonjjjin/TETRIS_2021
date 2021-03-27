@@ -161,7 +161,7 @@ void CheckKeyAndAction(minoInfo* mino, locationInfo* location, int* speedUp) {
 				//틀 이탈 or 내려놓은 도형과의 충돌 상황이라면 안내려!
 				int CheckColoringMino = UpdateNewPosition(*mino);
 				if(UpdateLocation(*mino, location) < 0 || CheckColoringMino < 0) mino->x += 2;
-//				else DeletePrevPosition_Left(*mino);
+				else DeletePrevPosition_Left(*mino);
 			}
 			break;
 		case k_right:
@@ -174,9 +174,12 @@ void CheckKeyAndAction(minoInfo* mino, locationInfo* location, int* speedUp) {
 			*speedUp = 5; break;
 		case k_rotate:
 			int rotateTempDirec = mino->direc;
-			if (mino->shape < 3) mino->direc == 0 ? 1 : 0;
-			else if (mino->shape == 3) mino->direc = 0;
-			else { mino->direc = (mino->direc) + 1; if (mino->direc == 4) mino->direc = 0; }
+			if (mino->shape < 3) 
+				mino->direc = mino->direc == 0 ? 1 : 0;
+			else if (mino->shape == 3) 
+				mino->direc = 0;
+			else {
+				mino->direc = (mino->direc) + 1; if (mino->direc == 4) mino->direc = 0; }
 			//틀 이탈 or 내려놓은 도형과의 충돌 상황이라면 안내려!
 			int CheckColoringMino = UpdateNewPosition(*mino);
 			if (UpdateLocation(*mino, location) < 0 || CheckColoringMino < 0) mino->direc = rotateTempDirec;
