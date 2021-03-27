@@ -24,7 +24,11 @@ void gotoxy(int x, int y)
 //location 정보 set. 만약 입력 받은 정보대로 위치를 바꿀 수 없다면 return -1
 int UpdateLocation(minoInfo mino, locationInfo* location) {
 	int x = mino.x; int y = mino.y;
-	int minoInfoIndex = mino.shape + mino.direc;
+	int minoInfoIndex = 0;
+	if (mino.shape < 3)
+		minoInfoIndex = mino.shape * 2 + mino.direc;
+	else if (mino.shape == 3) minoInfoIndex = 6;
+	else  minoInfoIndex = mino.shape * 4 + mino.direc - 9;
 	switch (minoInfoIndex) {
 	case BarHoriz:
 		if (((x < 26) || (x > 38)) || (y > 26))
@@ -75,7 +79,11 @@ int UpdateLocation(minoInfo mino, locationInfo* location) {
 //아래 양 옆 따로 지우는 함수 필요함
 int UpdateNewPosition(minoInfo mino ) {
 	int x = mino.x; int y = mino.y;
-	int minoInfoIndex = mino.shape + mino.direc;
+	int minoInfoIndex = 0;
+	if (mino.shape < 3)
+		minoInfoIndex = mino.shape * 2 + mino.direc;
+	else if (mino.shape == 3) minoInfoIndex = 6;
+	else minoInfoIndex= mino.shape * 4 + mino.direc - 9;
 
 	switch (minoInfoIndex) {
 	case BarHoriz:
@@ -162,7 +170,11 @@ int UpdateNewPosition(minoInfo mino ) {
 //내려가기 가능할 때 이전 위치 흔적지워
 void DeletePrevPosition_Down(minoInfo mino) {
 	int x = mino.x; int y = mino.y;
-	int minoInfoIndex = mino.shape + mino.direc;
+	int minoInfoIndex = 0;
+	if (mino.shape < 3)
+		minoInfoIndex = mino.shape * 2 + mino.direc;
+	else if (mino.shape == 3) minoInfoIndex = 6;
+	else minoInfoIndex = mino.shape * 4 + mino.direc - 9;
 	switch (minoInfoIndex) {
 	case BarHoriz:
 		for (int i = -1; i < 3; i++) { ground[x - 2 + i][y-1] = 0; } break;
@@ -219,7 +231,11 @@ void DeletePrevPosition_Down(minoInfo mino) {
 //left 이동할 때 이전 위치 흔적지워
 void DeletePrevPosition_Left(minoInfo mino) {
 	int x = mino.x; int y = mino.y;
-	int minoInfoIndex = mino.shape + mino.direc;
+	int minoInfoIndex =0;
+	if (mino.shape < 3)
+		minoInfoIndex = mino.shape * 2 + mino.direc;
+	else if (mino.shape == 3) minoInfoIndex = 6;
+	else minoInfoIndex= mino.shape * 4 + mino.direc - 9;
 	switch (minoInfoIndex) {
 	case BarHoriz:
 		ground[x+6][y] = 0; break;
@@ -296,9 +312,13 @@ void DeletePrevPosition_Left(minoInfo mino) {
 }
 
 //rotate 할 때 이전 위치 흔적지워
-void DeletePrevPosition_Left(minoInfo mino) {
+void DeletePrevPosition_Rotate(minoInfo mino) {
 	int x = mino.x; int y = mino.y;
-	int minoInfoIndex = mino.shape + mino.direc;
+	int minoInfoIndex = 0;
+	if (mino.shape < 3)
+		minoInfoIndex = mino.shape * 2 + mino.direc;
+	else if (mino.shape == 3) minoInfoIndex = 6;
+	else minoInfoIndex =  mino.shape * 4 + mino.direc - 9;
 	switch (minoInfoIndex) {
 	case BarHoriz:
 		ground[x - 2][y] = 0;
@@ -387,7 +407,11 @@ void DeletePrevPosition_Left(minoInfo mino) {
 //현재 좌표를 받아서 화면에 도형 출력, location set 분리
 void PrintMino(minoInfo mino, locationInfo* location) {
 	int x = mino.x; int y = mino.y;
-	int minoInfoIndex = mino.shape + mino.direc;
+	int minoInfoIndex = 0;
+	if(mino.shape<3)
+		minoInfoIndex = mino.shape*2+ mino.direc;
+	else if (mino.shape == 3) minoInfoIndex = 6;
+	else minoInfoIndex = mino.shape * 4 + mino.direc-9;
 	switch (minoInfoIndex) {
 	case BarHoriz:
 		gotoxy(x - 2, y); printf("□□□□"); break;
