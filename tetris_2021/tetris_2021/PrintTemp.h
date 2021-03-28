@@ -87,8 +87,8 @@ int UpdateNewPosition(minoInfo mino ) {
 
 	switch (minoInfoIndex) {
 	case BarHoriz:
-		for (int i = 0; i < 4; i++) { if (ground[x - 2 + i][y] > 1) return -1; }
-		for (int i = 0; i < 4; i++) ground[x - 2 + i][y] = 1;
+		for (int i = 0; i < 4; i++) { if (ground[x - 2 + 2*i][y] > 1) return -1; }
+		for (int i = 0; i < 4; i++) ground[x - 2 + 2*i][y] = 1;
 	    break;
 	case BarVertical:
 		for (int i = -1; i < 3; i++) { if(ground[x][y + i]>1) return -1; }
@@ -96,7 +96,7 @@ int UpdateNewPosition(minoInfo mino ) {
 		break;
 	case ZLVertical:
 		if (((ground[x + 2][y - 1] > 1) || (ground[x][y] > 1)) || ((ground[x + 2][y] > 1) || (ground[x][y + 1] > 1))) return -1;
-		ground[x + 2][y - 1] = 1; ground[x][y] = 1; ground[x + 2][y] = 1; ground[x][y + 1];
+		ground[x + 2][y - 1] = 1; ground[x][y] = 1; ground[x + 2][y] = 1; ground[x][y + 1]=1;
 		break;
 	case ZLHoriz:
 		if (((ground[x - 2][y] > 1) || (ground[x][y] > 1)) || ((ground[x][y+1] > 1) || (ground[x+2][y + 1] > 1))) return -1;
@@ -160,7 +160,7 @@ int UpdateNewPosition(minoInfo mino ) {
 		break;
 	case T3:
 		if (((ground[x][y - 1] > 1) || (ground[x][y] > 1)) || ((ground[x+2][y] > 1) || (ground[x][y + 1] > 1))) return -1;
-		ground[x][y - 1] = 1; ground[x - 2][y] = 1; ground[x][y] = 1; ground[x][y + 1] = 1;
+		ground[x][y - 1] = 1; ground[x][y] = 1; ground[x+2][y] = 1; ground[x][y + 1] = 1;
 		break;
 	}
 	return 1;
@@ -177,7 +177,7 @@ void DeletePrevPosition_Down(minoInfo mino) {
 	else minoInfoIndex = mino.shape * 4 + mino.direc - 9;
 	switch (minoInfoIndex) {
 	case BarHoriz:
-		for (int i = -1; i < 3; i++) { ground[x - 2 + i][y-1] = 0; } break;
+		for (int i = 0; i < 4; i++) { ground[x - 2 + 2*i][y-1] = 0; } break;
 	case BarVertical:
 		ground[x][y - 2] = 0; break;
 	case ZLVertical:

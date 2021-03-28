@@ -253,6 +253,7 @@ int main()
 	
 	int speedUp = 0;
 	while (1) {
+		UpdateLocation(current, &location);
 		CheckKeyAndAction(&current, &location, &speedUp);
 		SetGameGround(next, grade, &location);
 		AutoDownMino(&current, location, &fixMino);
