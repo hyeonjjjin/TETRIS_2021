@@ -35,7 +35,7 @@ int UpdateLocation(minoInfo mino, locationInfo* location) {
 			return -1;
 		*location = { x - 2,x + 4,y,y }; break;
 	case BarVertical:
-		if (((x < 24) || (x > 42)) || ((y > 24) || (y < 8)))
+		if (((x < 24) || (x > 42)) ||(y > 24))
 			return -1;
 		*location = { x, x, y + 2, y - 1 }; break;
 	case ZLVertical:
@@ -45,7 +45,7 @@ int UpdateLocation(minoInfo mino, locationInfo* location) {
 	case ChairR1:
 	case ChairR3:
 	case T3:
-		if (((x < 24) || (x > 40)) || ((y > 25) || (y < 8)))
+		if (((x < 24) || (x > 40)) || (y > 25))
 			return -1;
 		*location = { x, x + 2,y + 1,y - 1 }; break;
 	case ZLHoriz:
@@ -55,19 +55,19 @@ int UpdateLocation(minoInfo mino, locationInfo* location) {
 	case ChairR0:
 	case ChairR2:
 	case T0:
-		if (((x < 26) || (x > 40)) || ((y > 25) || (y < 7)))
+		if (((x < 26) || (x > 40)) || (y > 25) )
 			return -1;
 		*location = { x - 2,x + 2,y + 1,y }; break;
 	case Square:
-		if (((x < 24) || (x > 40)) || ((y > 25) || (y < 7)))
+		if (((x < 24) || (x > 40)) || (y > 25) )
 			return -1;
 		*location = { x, x + 2,y + 1,y }; break;
 	case T1:
-		if (((x < 26) || (x > 42)) || ((y > 25) || (y < 8)))
+		if (((x < 26) || (x > 42)) || (y > 25) )
 			return -1;
 		*location = { x - 2, x, y + 1, y - 1 }; break;
 	case T2:
-		if (((x < 26) || (x > 40)) || ((y > 26) || (y < 8)))
+		if (((x < 26) || (x > 40)) || (y > 26) )
 			return -1;
 		*location = { x - 2, x + 2, y, y - 1 }; break;
 	}
@@ -165,6 +165,74 @@ int UpdateNewPosition(minoInfo mino ) {
 	}
 	return 1;
 
+}
+
+void FixCurrentMino(minoInfo mino) {
+	int x = mino.x; int y = mino.y;
+	int minoInfoIndex = 0;
+	if (mino.shape < 3)
+		minoInfoIndex = mino.shape * 2 + mino.direc;
+	else if (mino.shape == 3) minoInfoIndex = 6;
+	else minoInfoIndex = mino.shape * 4 + mino.direc - 9;
+	switch (minoInfoIndex) {
+	case BarHoriz:
+		ground[x - 2][y] = 2; ground[x][y] = 2; ground[x + 2][y] = 2; ground[x + 4][y] = 2;
+		gotoxy(x - 2, y); printf("□□□□"); break;
+	case BarVertical:
+		for (int i = -1; i < 3; i++) ground[x][y+i] = 2;
+		break;
+	case ZLVertical:
+		ground[x + 2][y-1] = 2; ground[x][y] = 2; ground[x + 2][y] = 2; ground[x][y+1] = 2;
+		break;
+	case ZLHoriz:
+		ground[x - 2][y] = 2; ground[x][y] = 2; ground[x][y+1] = 2; ground[x + 2][y+1] = 2;
+		break;
+	case ZRVertical:
+		ground[x][y-1] = 2; ground[x][y] = 2; ground[x + 2][y] = 2; ground[x + 2][y+1] = 2;
+		break;
+	case ZRHoriz:
+		ground[x][y] = 2; ground[x + 2][y] = 2; ground[x - 2][y+1] = 2; ground[x][y+1] = 2;
+		break;
+	case Square:
+		ground[x][y] = 2; ground[x + 2][y] = 2; ground[x][y+1] = 2; ground[x+2][y+1] = 2;
+		break;
+	case ChairL0:
+		ground[x - 2][y] = 2; ground[x][y] = 2; ground[x + 2][y] = 2; ground[x - 2][y+1] = 2;
+		break;
+	case ChairL1:
+		ground[x][y-1] = 2; ground[x + 2][y-1] = 2; ground[x + 2][y] = 2; ground[x + 2][y+1] = 2;
+		break;
+	case ChairL2:
+		ground[x + 2][y] = 2; ground[x - 2][y+1] = 2; ground[x][y+1] = 2; ground[x + 2][y+1] = 2;
+		break;
+	case ChairL3:
+		ground[x][y-1] = 2; ground[x][y] = 2; ground[x][y+1] = 2; ground[x + 2][y+1] = 2;
+		break;
+	case ChairR0:
+		ground[x - 2][y] = 2; ground[x][y] = 2; ground[x + 2][y] = 2; ground[x + 2][y+1] = 2;
+		break;
+	case ChairR1:
+		ground[x + 2][y-1] = 2; ground[x + 2][y] = 2; ground[x][y+1] = 2; ground[x + 2][y+1] = 2;
+		break;
+	case ChairR2:
+		ground[x - 2][y] = 2; ground[x - 2][y+1] = 2; ground[x][y+1] = 2; ground[x +2][y+1] = 2;
+		break;
+	case ChairR3:
+		ground[x][y-1] = 2; ground[x+2][y-1] = 2; ground[x][y] = 2; ground[x][y+1] = 2;
+		break;
+	case T0:
+		ground[x - 2][y] = 2; ground[x][y] = 2; ground[x + 2][y] = 2; ground[x][y+1] = 2;
+		break;
+	case T1:
+		ground[x][y-1] = 2; ground[x - 2][y] = 2; ground[x][y] = 2; ground[x][y+1] = 2;
+		break;
+	case T2:
+		ground[x][y-1] = 2; ground[x - 2][y] = 2; ground[x][y] = 2; ground[x + 2][y] = 2;
+		break;
+	case T3:
+		ground[x][y-1] = 2; ground[x][y] = 2; ground[x + 2][y] = 2; ground[x][y+1] = 2;
+		break;
+	}
 }
 
 //내려가기 가능할 때 이전 위치 흔적지워
@@ -434,6 +502,8 @@ void DeletePrevPosition_Rotate(minoInfo mino) {
 		ground[x - 2][y] = 0; break;
 	}
 }
+
+
 
 //현재 좌표를 받아서 화면에 도형 출력, location set 분리
 void PrintMino(minoInfo mino, locationInfo* location) {
