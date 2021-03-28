@@ -92,7 +92,12 @@ void SetGameGround(minoInfo next, gradeInfo grade, locationInfo* location) {
 	gotoxy(52, 8);
 	printf("NEXT");
 	//next 예쁜 위치에 출력하기 위한 if문
-	if ((next.shape + next.direc) % 2 == 1)	next.x = 53;
+	int minoInfoIndex = 0;
+	if (next.shape < 3)
+		minoInfoIndex = next.shape * 2 + next.direc;
+	else if (next.shape == 3) minoInfoIndex = 6;
+	else minoInfoIndex = next.shape * 4 + next.direc - 9;
+	if ((minoInfoIndex) % 2 == 1)	next.x = 53;
 	else next.x = 52;
 	PrintMino(next, location);
 }
@@ -142,6 +147,7 @@ void SetMinoInfo(minoInfo *mino) {
 //방향키 입력에 따라 동작
 void CheckKeyAndAction(minoInfo* mino, locationInfo* location, int* speedUp) {
 	int input = 0;
+	int CheckColoringMino = 0;
 	//방향 키 입력 받아오기
 	if (_kbhit())
 	{
@@ -159,15 +165,18 @@ void CheckKeyAndAction(minoInfo* mino, locationInfo* location, int* speedUp) {
 			if (location->left_x >= 24)	{//지우기, location 정보 새로고침
 				mino->x -= 2;
 				//틀 이탈 or 내려놓은 도형과의 충돌 상황이라면 안내려!
-				int CheckColoringMino = UpdateNewPosition(*mino);
+				CheckColoringMino = UpdateNewPosition(*mino);
 				if(UpdateLocation(*mino, location) < 0 || CheckColoringMino < 0) mino->x += 2;
 				else DeletePrevPosition_Left(*mino);
+
 			}
 			break;
 		case k_right:
 			if (location->right_x <= 42){ 
 				mino->x += 2;
-				if (UpdateLocation(*mino, location) < 0) mino->x -= 2;
+				CheckColoringMino = UpdateNewPosition(*mino);
+				if (UpdateLocation(*mino, location) < 0 || CheckColoringMino < 0) mino->x -= 2;
+				else { DeletePrevPosition_Right(*mino); }
 			}
 			break;
 		case k_down:
@@ -178,30 +187,29 @@ void CheckKeyAndAction(minoInfo* mino, locationInfo* location, int* speedUp) {
 				mino->direc = mino->direc == 0 ? 1 : 0;
 			else if (mino->shape == 3) 
 				mino->direc = 0;
-			else {
-				mino->direc = (mino->direc) + 1; if (mino->direc == 4) mino->direc = 0; }
+			else {mino->direc = (mino->direc) + 1; if (mino->direc == 4) mino->direc = 0; }
 			//틀 이탈 or 내려놓은 도형과의 충돌 상황이라면 안내려!
-			int CheckColoringMino = UpdateNewPosition(*mino);
+			CheckColoringMino = UpdateNewPosition(*mino);
 			if (UpdateLocation(*mino, location) < 0 || CheckColoringMino < 0) mino->direc = rotateTempDirec;
+			else  DeletePrevPosition_Rotate(*mino); 
 			
 		}
 		PrintCurrentMino();
-		system("cls");
+		//system("cls");
 		//PrintMino(*mino, location);
 	}
+	
 }
 
 //speed 에 맞춰서 일정 시간 단위로 mino 떨구기, down키에 따른 동작조건 필요
-void AutoDownMino(minoInfo* mino,locationInfo location, int* fixMino) {
+void AutoDownMino(minoInfo* mino, locationInfo location) {
 	int CheckColoringMino = 0;
 	if ((location.bottom_y < 26)) {//지우기, location 정보 새로고침
 		mino->y += 1;
 		//틀 이탈 or 내려놓은 도형과의 충돌 상황이라면 안내려!
 		CheckColoringMino = UpdateNewPosition(*mino);
-		if (UpdateLocation(*mino, &location) < 0 || CheckColoringMino < 0) {
+		if (UpdateLocation(*mino, &location) < 0 || CheckColoringMino < 0)
 			mino->y -= 1;
-			*fixMino = 1;
-		}
 		//외의 경우 mino 하강 가능하므로 Array에서 이전 위치 지우기
 		else {
 			DeletePrevPosition_Down(*mino);
@@ -239,7 +247,9 @@ int main()
 	int currentCenterX = 42;
 	int currentCenterY = 7;
 
-	int fixMino = 0;
+	int fixMino_Side = 0;
+	int fixMino_Down = 0;
+
 
 	//게임 화면 세팅
 	srand(time(NULL));
@@ -256,7 +266,8 @@ int main()
 		UpdateLocation(current, &location);
 		CheckKeyAndAction(&current, &location, &speedUp);
 		SetGameGround(next, grade, &location);
-		AutoDownMino(&current, location, &fixMino);
+		AutoDownMino(&current, location);
+		if (fixMino_Side< 0||fixMino_Down<0) ColoringTemp();
 		Sleep(500);
 		//PrintMino(current, &location);
 	}

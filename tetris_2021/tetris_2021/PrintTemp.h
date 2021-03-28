@@ -311,6 +311,68 @@ void DeletePrevPosition_Left(minoInfo mino) {
 	}
 }
 
+//right 이동할 때 이전 위치 흔적지워
+void DeletePrevPosition_Right(minoInfo mino) {
+	int x = mino.x; int y = mino.y;
+	int minoInfoIndex = 0;
+	if (mino.shape < 3)
+		minoInfoIndex = mino.shape * 2 + mino.direc;
+	else if (mino.shape == 3) minoInfoIndex = 6;
+	else minoInfoIndex = mino.shape * 4 + mino.direc - 9;
+	switch (minoInfoIndex) {
+	case BarHoriz:
+		ground[x - 4][y] = 0; break;
+	case BarVertical:
+		for (int i = -1; i < 3; i++) { ground[x-2][y + i]=0; }
+		break;
+	case ZLVertical:
+		ground[x][y - 1] = 0; ground[x - 2][y] = 0; ground[x - 2][y + 1] = 0;
+		break;
+	case ZLHoriz:
+	case T0:
+		ground[x - 4][y] = 0; ground[x - 2][y + 1] = 0;
+		break;
+	case ZRVertical:
+		ground[x - 2][y - 1] = 0; ground[x - 2][y] = 0; ground[x][y + 1] = 0;
+		break;
+	case ZRHoriz:
+		ground[x - 2][y] = 0; ground[x - 4][y + 1] = 0;
+		break;
+	case Square:
+		ground[x - 2][y] = 0; ground[x - 2][y + 1] = 0;
+		break;
+	case ChairL0:
+	case ChairR2:
+		ground[x - 4][y] = 0; ground[x - 4][y + 1] = 0;
+		break;
+	case ChairL1:
+		ground[x - 2][y - 1] = 0; ground[x][y] = 0; ground[x][y + 1] = 0;
+		break;
+	case ChairL2:
+		ground[x][y] = 0; ground[x - 4][y + 1] = 0;
+		break;
+	case ChairL3:
+	case T3:
+		ground[x - 2][y - 1] = 0; ground[x - 2][y] = 0; ground[x - 2][y + 1] = 0;
+		break;
+	case ChairR0:
+		ground[x - 4][y] = 0; ground[x][y + 1] = 0;
+		break;
+	case ChairR1:
+		ground[x][y - 1] = 0; ground[x][y] = 0; ground[x - 2][y + 1] = 0;
+		break;
+	case ChairR3:
+		ground[x - 2][y - 1] = 0; ground[x - 2][y] = 0; ground[x - 2][y + 1] = 0;
+		break;
+	case T1:
+		ground[x - 2][y - 1] = 0; ground[x - 4][y] = 0; ground[x - 2][y + 1] = 0;
+		break;
+	case T2:
+		ground[x - 2][y - 1] = 0; ground[x - 4][y] = 0;
+		break;
+	}
+}
+
 //rotate 할 때 이전 위치 흔적지워
 void DeletePrevPosition_Rotate(minoInfo mino) {
 	int x = mino.x; int y = mino.y;
@@ -321,86 +383,55 @@ void DeletePrevPosition_Rotate(minoInfo mino) {
 	else minoInfoIndex =  mino.shape * 4 + mino.direc - 9;
 	switch (minoInfoIndex) {
 	case BarHoriz:
-		ground[x - 2][y] = 0;
-		ground[x + 2][y] = 0;
-		ground[x + 4][y] = 0;
+		ground[x][y - 1] = 0; ground[x][y + 1] = 0; ground[x][y + 2] = 0;
 		break;
 	case BarVertical:
-		ground[x][y-1] = 0;
-		ground[x][y+1] = 0;
-		ground[x][y+2] = 0;
+		ground[x - 2][y] = 0; ground[x + 2][y] = 0; ground[x + 4][y] = 0;
 		break;
 	case ZLVertical:
-		ground[x+2][y - 1] = 0;
-		ground[x+2][y] = 0;
+		ground[x - 2][y] = 0; ground[x + 2][y + 1] = 0;
 		break;
 	case ZLHoriz:
-		ground[x-2][y] = 0;
-		ground[x+2][y + 1] = 0;
+		ground[x + 2][y - 1] = 0; ground[x + 2][y] = 0;
 		break;
 	case ZRVertical:
-		ground[x][y - 1] = 0;
-		ground[x+2][y + 1] = 0;
+		ground[x - 2][y + 1] = 0; ground[x][y + 1] = 0;
 		break;
 	case ZRHoriz:
-		ground[x-2][y + 1] = 0;
-		ground[x][y + 1] = 0;
+		ground[x][y - 1] = 0; ground[x + 2][y + 1] = 0;
 		break;
 	case ChairL0:
-		gotoxy(x - 2, y); printf("□□□");
-		gotoxy(x - 2, y + 1); printf("□");
+		ground[x][y - 1] = 0; ground[x][y + 1] = 0; ground[x + 2][y + 1] = 0;
 		break;
 	case ChairL1:
-		gotoxy(x, y - 1); printf("□□");
-		gotoxy(x + 2, y); printf("□");
-		gotoxy(x + 2, y + 1); printf("□");
+		ground[x - 2][y] = 0; ground[x][y] = 0; ground[x - 2][y + 1] = 0;	
 		break;
 	case ChairL2:
-
-		gotoxy(x + 2, y); printf("□");
-		gotoxy(x - 2, y + 1); printf("□□□");
+		ground[x][y - 1] = 0; ground[x + 2][y - 1] = 0;
 		break;
 	case ChairL3:
-		gotoxy(x, y - 1); printf("□");
-		gotoxy(x, y); printf("□");
-		gotoxy(x, y + 1); printf("□□");
+		ground[x - 2][y+1] = 0; ground[x + 2][y] = 0;
 		break;
 	case ChairR0:
-		gotoxy(x - 2, y); printf("□□□");
-		gotoxy(x + 2, y + 1); printf("□");
+		ground[x][y - 1] = 0; ground[x + 2][y - 1] = 0; ground[x][y + 1] = 0;
 		break;
 	case ChairR1:
-		gotoxy(x + 2, y - 1); printf("□");
-		gotoxy(x + 2, y); printf("□");
-		gotoxy(x, y + 1); printf("□□");
+		ground[x - 2][y] = 0; ground[x][y] = 0;
 		break;
 	case ChairR2:
-		gotoxy(x - 2, y); printf("□");
-		gotoxy(x - 2, y + 1); printf("□□□");
+		ground[x + 2][y - 1] = 0; ground[x + 2][y] = 0;
 		break;
 	case ChairR3:
-		gotoxy(x, y - 1); printf("□□");
-		gotoxy(x, y); printf("□");
-		gotoxy(x, y + 1); printf("□");
+		ground[x - 2][y] = 0; ground[x - 2][y + 1] = 0; ground[x + 2][y + 1] = 0;
 		break;
 	case T0:
-		gotoxy(x - 2, y); printf("□□□");
-		gotoxy(x, y + 1); printf("□");
-		break;
+		ground[x][y - 1] = 0; break;
 	case T1:
-		gotoxy(x, y - 1); printf("□");
-		gotoxy(x - 2, y); printf("□□");
-		gotoxy(x, y + 1); printf("□");
-		break;
+		ground[x + 2][y] = 0; break;
 	case T2:
-		gotoxy(x, y - 1); printf("□");
-		gotoxy(x - 2, y); printf("□□□");
-		break;
+		ground[x][y + 1] = 0; break;
 	case T3:
-		gotoxy(x, y - 1); printf("□");
-		gotoxy(x, y); printf("□□");
-		gotoxy(x, y + 1); printf("□");
-		break;
+		ground[x - 2][y] = 0; break;
 	}
 }
 
