@@ -192,10 +192,20 @@ void CheckKeyAndAction(minoInfo* mino, locationInfo* location, int* speedUp, int
 		case k_right:
 			if (location->right_x < 42){ 
 				mino->x += 2;
-				CheckColoringMino = UpdateNewPosition(*mino);
-				CheckBottom = UpdateLocation(*mino, location);
-				if (CheckBottom < 0 || CheckColoringMino < 0) mino->x -= 2;
-				else { DeletePrevPosition_Right(*mino); PrintCurrentMino();
+				//right 이동이 틀을 벗어나지 않는지 확인
+				//벗어난다면 다시 mino->x 원상태로 돌림
+				if (CheckIsInBoard(*mino, location) < 0) mino->x -= 2;
+				//벗어나지 않는다면
+				else {
+					//fix된 도형과 겹치지 않는지 확인
+					CheckColoringMino = UpdateNewPosition(*mino);
+					//겹친다면 mino->x 원상태로 돌림
+					if (CheckColoringMino < 0) mino->x -= 2;
+					//모든 문제가 없는 경우 우측 이동 허용. location 정보 업데이트, 이전 위치 흔적 지움, 현재 위치 출력
+					else {
+						//UpdateLocation(*mino, location);
+						DeletePrevPosition_Right(*mino); PrintCurrentMino();
+					}
 				}
 			}
 			break;
@@ -302,8 +312,8 @@ int main()
 	
 	int speedUp = 0;
 	while (1) {
-		UpdateLocation(current, &location);
 		CheckKeyAndAction(&current, &location, &speedUp, &setNextMino);
+		UpdateLocation(current, &location);
 		SetGameGround(next, grade, &location);
 		AutoDownMino(&current, location, &setNextMino);
 		if (setNextMino == 1) { 
