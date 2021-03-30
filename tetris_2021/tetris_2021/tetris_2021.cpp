@@ -344,7 +344,7 @@ int main()
 
 	//초기화
 	minoInfo current = { 0,0,center_x, center_y}; minoInfo next = { 0,0,next_x,next_y };
-	gradeInfo grade = { 0,0 };
+	gradeInfo grade = { 1,0 };
 	locationInfo location = { 0,0,0,0 };
 
 	int setNextMino = 0;
