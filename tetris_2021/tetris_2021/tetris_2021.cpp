@@ -220,13 +220,22 @@ void CheckKeyAndAction(minoInfo* mino, locationInfo* location, int* speedUp, int
 			else if (mino->shape == 3) 
 				mino->direc = 0;
 			else {mino->direc = (mino->direc) + 1; if (mino->direc == 4) mino->direc = 0; }
-			//틀 이탈 or 내려놓은 도형과의 충돌 상황이라면 안내려!
-			CheckColoringMino = UpdateNewPosition(*mino);
-			CheckBottom = UpdateLocation(*mino, location);
-			if (CheckBottom < 0 || CheckColoringMino < 0) mino->direc = rotateTempDirec;
-			else { DeletePrevPosition_Rotate(*mino); PrintCurrentMino();
-			}
-			
+
+			//rotate가 틀을 벗어나지 않는지 확인
+			//벗어난다면 다시 mino->direc 원상태로 돌림
+			if (CheckIsInBoard(*mino, location) < 0) mino->direc = rotateTempDirec;
+			//벗어나지 않는다면
+			else {
+				//fix된 도형과 겹치지 않는지 확인
+				CheckColoringMino = UpdateNewPosition(*mino);
+				//겹친다면 mino->direc 원상태로 돌림
+				if (CheckColoringMino < 0) mino->direc = rotateTempDirec;
+				//모든 문제가 없는 경우 회전 허용. 이전 위치 흔적 지움, 현재 위치 출력
+				else {
+					//UpdateLocation(*mino, location);
+					DeletePrevPosition_Rotate(*mino); PrintCurrentMino();
+				}
+			}			
 		}
 
 		//PrintCurrentMino();
@@ -242,18 +251,27 @@ void AutoDownMino(minoInfo* mino, locationInfo location, int* setNextMino) {
 	int CheckBottom = 0;
 	if ((location.bottom_y < 26)) {//지우기, location 정보 새로고침
 		mino->y += 1;
-		//틀 이탈 or 내려놓은 도형과의 충돌 상황이라면 안내려!
-		CheckColoringMino = UpdateNewPosition(*mino);
-		CheckBottom = UpdateLocation(*mino, &location);
-		if (CheckBottom < 0 || CheckColoringMino < 0) {
+
+		//틀을 벗어나지 않는지 확인
+		//벗어난다면 다시 mino->y 원상태로 돌림, 고정
+		if (CheckIsInBoard(*mino, &location) < 0) {
 			mino->y -= 1;
 			FixCurrentMino(*mino);
 		}
-		//외의 경우 mino 하강 가능하므로 Array에서 이전 위치 지우기
+		//벗어나지 않는다면
 		else {
-			DeletePrevPosition_Down(*mino);
-			PrintCurrentMino();
-			//PrintMino(*mino, &location);
+			//fix된 도형과 겹치지 않는지 확인
+			CheckColoringMino = UpdateNewPosition(*mino);
+			//겹친다면 mino->y 원상태로 돌림
+			if (CheckColoringMino < 0) {
+				mino->y -= 1;
+				FixCurrentMino(*mino);
+			}
+			//모든 문제가 없는 경우 하강 허용. 이전 위치 흔적 지움, 현재 위치 출력
+			else {
+				DeletePrevPosition_Down(*mino);
+				PrintCurrentMino();
+			}
 		}
 	}
 	//바닥 도착하면 fix

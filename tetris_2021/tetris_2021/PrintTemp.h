@@ -28,6 +28,45 @@ int CheckIsInBoard(minoInfo mino, locationInfo* location) {
 	else return 1;
 }
 
+//CheckIsInBoard 분리 후 
+void UpdateLocation(minoInfo mino, locationInfo* location) {
+	int x = mino.x; int y = mino.y;
+	int minoInfoIndex = 0;
+	if (mino.shape < 3)
+		minoInfoIndex = mino.shape * 2 + mino.direc;
+	else if (mino.shape == 3) minoInfoIndex = 6;
+	else  minoInfoIndex = mino.shape * 4 + mino.direc - 9;
+	switch (minoInfoIndex) {
+	case BarHoriz:
+		*location = { x - 2,x + 4,y,y }; break;
+	case BarVertical:
+		*location = { x, x, y + 2, y - 1 }; break;
+	case ZLVertical:
+	case ZRVertical:
+	case ChairL1:
+	case ChairL3:
+	case ChairR1:
+	case ChairR3:
+	case T3:
+		*location = { x, x + 2,y + 1,y - 1 }; break;
+	case ZLHoriz:
+	case ZRHoriz:
+	case ChairL0:
+	case ChairL2:
+	case ChairR0:
+	case ChairR2:
+	case T0:
+		*location = { x - 2,x + 2,y + 1,y }; break;
+	case Square:
+		*location = { x, x + 2,y + 1,y }; break;
+	case T1:
+		*location = { x - 2, x, y + 1, y - 1 }; break;
+	case T2:
+		*location = { x - 2, x + 2, y, y - 1 }; break;
+	}
+}
+
+/*
 int UpdateLocation(minoInfo mino, locationInfo* location) {
 	int x = mino.x; int y = mino.y;
 	int minoInfoIndex = 0;
@@ -79,7 +118,7 @@ int UpdateLocation(minoInfo mino, locationInfo* location) {
 	}
 	return 1;
 }
-
+*/
 
 
 //만약 입력받은 정보대로 위치를 바꿀 수 없다면 return -1
