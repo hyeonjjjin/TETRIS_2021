@@ -103,7 +103,7 @@ void SetGameGround(minoInfo next, gradeInfo grade, locationInfo* location) {
 	else if (next.shape == 3) minoInfoIndex = 6;
 	else minoInfoIndex = next.shape * 4 + next.direc - 9;
 	if ((minoInfoIndex) % 2 == 1)	next.x = 53;
-	else next.x = 52;
+	else if(minoInfoIndex==16|| minoInfoIndex == 18) next.x = 53;
 	PrintMino(next, location);
 }
 
@@ -138,6 +138,30 @@ void PrintCurrentMino() {
 				printf("  ");
 			}
 		}
+	}
+}
+
+//줄 채웠는지 확인
+int CheckLineClear() {
+	int isClear=1;
+	for (int line = 26; line >= 7; line--) {
+		isClear = 1;
+		for (int x = 24; x <= 42; x+=2) {
+			if (ground[x][line] != 2) {
+				isClear = -1;
+				x = 44;
+			}
+		}
+		
+		if (isClear>0) return line;
+	}
+	return -1;
+}
+
+//한 줄 채우면 사삭 지우고 내리기
+void LineCLear(int line) {
+	for (int y = line; y >=7; y--) {
+		for (int x = 24; x <= 42; x++)	ground[x][y] = ground[x][y - 1];
 	}
 }
 
@@ -188,6 +212,8 @@ void CheckKeyAndAction(minoInfo* mino, locationInfo* location, int* speedUp, int
 				}
 
 			}
+			else //버퍼비우기
+				fflush(stdin);
 			break;
 		case k_right:
 			if (location->right_x < 42){ 
@@ -208,9 +234,11 @@ void CheckKeyAndAction(minoInfo* mino, locationInfo* location, int* speedUp, int
 					}
 				}
 			}
+			else //버퍼비우기
+				fflush(stdin);
 			break;
 		case k_down:
-			*speedUp = 5;
+			*speedUp = 3;
 			//PrintCurrentMino();
 			break;
 		case k_rotate:
@@ -274,6 +302,7 @@ void AutoDownMino(minoInfo* mino, locationInfo location, int* setNextMino) {
 			}
 		}
 	}
+
 	//바닥 도착하면 fix
 	else {
 		FixCurrentMino(*mino); *setNextMino = 1; }
@@ -329,21 +358,43 @@ int main()
 	UpdateLocation(current, &location);
 	
 	int speedUp = 0;
+	int speed = 500;
+
+	int isClear = 0;
+
 	while (1) {
 		CheckKeyAndAction(&current, &location, &speedUp, &setNextMino);
-		UpdateLocation(current, &location);
-		SetGameGround(next, grade, &location);
 		AutoDownMino(&current, location, &setNextMino);
-		if (setNextMino == 1) { 
-			ColoringTemp(); 
+		UpdateLocation(current, &location);
+		//SetGameGround(next, grade, &location);
+		
+
+		//아래 키 누른경우 speed 조절
+		if (speedUp-- > 0) Sleep(speed /5);
+		else Sleep(speed);
+
+		//현재 mino가 도착한 경우 고정, 다음 mino 준비, 출력
+		if (setNextMino == 1) {
+			if (location.top_y < 7) break;
+			ColoringTemp();
 			CopyNextToCurrent(&current, &next);
 			SetMinoInfo(&next); SetGameGround(next, grade, &location);
 			PrintMino(current, &location);
-			UpdateLocation(current, &location);
+			UpdateLocation(current, &location); 
+
+			isClear = CheckLineClear();
+			if (isClear > 0) LineCLear(isClear);
+
 			setNextMino = 0;
+
+			//버퍼비우기
+			fflush(stdin);
 		}
-		Sleep(500);
+
+		
+
 		//PrintMino(current, &location);
 	}
+	//gotoxy(24, 16);
 	getchar();	
 }
