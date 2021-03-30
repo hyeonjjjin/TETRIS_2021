@@ -22,6 +22,12 @@ void gotoxy(int x, int y)
 }
 
 //location 정보 set. 만약 입력 받은 정보대로 위치를 바꿀 수 없다면 return -1
+int CheckIsInBoard(minoInfo mino, locationInfo* location) {
+	if (((location->left_x < 24) || (location->right_x > 42)) || (location->bottom_y > 26))
+		return -1;
+	else return 1;
+}
+
 int UpdateLocation(minoInfo mino, locationInfo* location) {
 	int x = mino.x; int y = mino.y;
 	int minoInfoIndex = 0;
@@ -73,6 +79,8 @@ int UpdateLocation(minoInfo mino, locationInfo* location) {
 	}
 	return 1;
 }
+
+
 
 //만약 입력받은 정보대로 위치를 바꿀 수 없다면 return -1
 //이 함수 호출 후 return -1이 아니라면 이전 위치 지우는 함수 실행
@@ -167,6 +175,7 @@ int UpdateNewPosition(minoInfo mino ) {
 
 }
 
+//이동 불가능할 때 현 위치에 mino 고정
 void FixCurrentMino(minoInfo mino) {
 	int x = mino.x; int y = mino.y;
 	int minoInfoIndex = 0;
