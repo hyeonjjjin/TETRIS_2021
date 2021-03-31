@@ -142,9 +142,9 @@ void PrintCurrentMino() {
 }
 
 //줄 채웠는지 확인
-int CheckLineClear() {
+int CheckLineClear(int top_y) {
 	int isClear=1;
-	for (int line = 26; line >= 7; line--) {
+	for (int line = 26; line >= top_y; line--) {
 		isClear = 1;
 		for (int x = 24; x <= 42; x+=2) {
 			if (ground[x][line] != 2) {
@@ -159,10 +159,11 @@ int CheckLineClear() {
 }
 
 //한 줄 채우면 사삭 지우고 내리기
-void LineCLear(int line) {
-	for (int y = line; y >=7; y--) {
-		for (int x = 24; x <= 42; x++)	ground[x][y] = ground[x][y - 1];
+void LineCLear(int line, int top_y) {
+	for (int y = line; y >= top_y; y--) {
+		for (int x = 24; x <= 42; x+=2)	ground[x][y] = ground[x][y - 1];
 	}
+
 }
 
 //떨굴 도형 모양, 방향 설정
@@ -249,6 +250,7 @@ void CheckKeyAndAction(minoInfo* mino, locationInfo* location, int* speedUp, int
 				mino->direc = 0;
 			else {mino->direc = (mino->direc) + 1; if (mino->direc == 4) mino->direc = 0; }
 
+			UpdateLocation(*mino, location);
 			//rotate가 틀을 벗어나지 않는지 확인
 			//벗어난다면 다시 mino->direc 원상태로 돌림
 			if (CheckIsInBoard(*mino, location) < 0) mino->direc = rotateTempDirec;
@@ -263,7 +265,8 @@ void CheckKeyAndAction(minoInfo* mino, locationInfo* location, int* speedUp, int
 					//UpdateLocation(*mino, location);
 					DeletePrevPosition_Rotate(*mino); PrintCurrentMino();
 				}
-			}			
+			}
+			UpdateLocation(*mino, location);
 		}
 
 		//PrintCurrentMino();
@@ -362,6 +365,8 @@ int main()
 
 	int isClear = 0;
 
+	int topOfFixedMino = 27;
+
 	while (1) {
 		CheckKeyAndAction(&current, &location, &speedUp, &setNextMino);
 		AutoDownMino(&current, location, &setNextMino);
@@ -375,6 +380,7 @@ int main()
 
 		//현재 mino가 도착한 경우 고정, 다음 mino 준비, 출력
 		if (setNextMino == 1) {
+			topOfFixedMino = location.top_y;
 			if (location.top_y < 7) break;
 			ColoringTemp();
 			CopyNextToCurrent(&current, &next);
@@ -382,8 +388,8 @@ int main()
 			PrintMino(current, &location);
 			UpdateLocation(current, &location); 
 
-			isClear = CheckLineClear();
-			if (isClear > 0) LineCLear(isClear);
+			isClear = CheckLineClear(topOfFixedMino);
+			if (isClear > 0) LineCLear(isClear, topOfFixedMino);
 
 			setNextMino = 0;
 
