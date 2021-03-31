@@ -338,6 +338,19 @@ void CopyNextToCurrent(minoInfo* current, minoInfo* next) {
 	current->y = center_y;
 }
 
+void CheckLevel(gradeInfo grade) {
+	if (grade.score > 500) grade.level = 2;
+	else if (grade.score >1000) grade.level =3;
+	else if (grade.score > 2000) grade.level = 4;
+	else if (grade.score > 3000) grade.level = 5;
+	else if (grade.score > 4000) grade.level = 6;
+	else if (grade.score > 4500) grade.level = 7;
+	else if (grade.score > 5000) grade.level = 8;
+	else if (grade.score > 5500) grade.level = 9;
+	else if (grade.score > 6000) grade.level = 10;
+	else grade.level = 99;
+}
+
 int main()
 {
 	//게임창 세팅
@@ -369,6 +382,7 @@ int main()
 
 	while (1) {
 		CheckKeyAndAction(&current, &location, &speedUp, &setNextMino);
+		rewind(stdin);
 		AutoDownMino(&current, location, &setNextMino);
 		UpdateLocation(current, &location);
 		//SetGameGround(next, grade, &location);
@@ -384,21 +398,29 @@ int main()
 			topOfFixedMino = topOfFixedMino>location.top_y ? location.top_y: topOfFixedMino;
 
 			if (location.top_y < 7) break;
+			
 			ColoringTemp();
 			CopyNextToCurrent(&current, &next);
-			SetMinoInfo(&next); SetGameGround(next, grade, &location);
+			SetMinoInfo(&next); 
+			SetGameGround(next, grade, &location);
 			PrintMino(current, &location);
 			UpdateLocation(current, &location); 
 
 			setNextMino = 0;
 
 			//버퍼비우기
-			fflush(stdin);
+			rewind(stdin);
 		}
 		isClear = CheckLineClear(topOfFixedMino);
-		if (isClear > 0) LineCLear(isClear, topOfFixedMino);
-		
+		if (isClear > 0) {
+			LineCLear(isClear, topOfFixedMino);
 
+			//성적, 레벨 정산.
+			grade.score += ((1 + grade.level / 3) * 100);
+			CheckLevel(grade);
+			speed = 500 - (grade.level - 1) * 80;
+			SetGameGround(next, grade, &location);
+		}
 		//PrintMino(current, &location);
 	}
 	//gotoxy(24, 16);
