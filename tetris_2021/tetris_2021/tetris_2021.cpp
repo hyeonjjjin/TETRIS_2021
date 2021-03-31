@@ -380,7 +380,9 @@ int main()
 
 		//현재 mino가 도착한 경우 고정, 다음 mino 준비, 출력
 		if (setNextMino == 1) {
-			topOfFixedMino = location.top_y;
+
+			topOfFixedMino = topOfFixedMino>location.top_y ? location.top_y: topOfFixedMino;
+
 			if (location.top_y < 7) break;
 			ColoringTemp();
 			CopyNextToCurrent(&current, &next);
@@ -388,15 +390,13 @@ int main()
 			PrintMino(current, &location);
 			UpdateLocation(current, &location); 
 
-			isClear = CheckLineClear(topOfFixedMino);
-			if (isClear > 0) LineCLear(isClear, topOfFixedMino);
-
 			setNextMino = 0;
 
 			//버퍼비우기
 			fflush(stdin);
 		}
-
+		isClear = CheckLineClear(topOfFixedMino);
+		if (isClear > 0) LineCLear(isClear, topOfFixedMino);
 		
 
 		//PrintMino(current, &location);
