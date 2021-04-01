@@ -339,17 +339,16 @@ void CopyNextToCurrent(minoInfo* current, minoInfo* next) {
 }
 
 void CheckLevel(gradeInfo* grade) {
-	if (grade->score < 500) grade->level = 1;
-	else if (grade->score >= 500) grade->level = 2;
-	else if (grade->score >=1000) grade->level =3;
-	else if (grade->score >= 2000) grade->level = 4;
-	else if (grade->score >= 3000) grade->level = 5;
-	else if (grade->score >= 4000) grade->level = 6;
-	else if (grade->score >= 4500) grade->level = 7;
-	else if (grade->score >= 5000) grade->level = 8;
+	if (grade->score >= 6000) grade->level = 10;
 	else if (grade->score >= 5500) grade->level = 9;
-	else if (grade->score >= 6000) grade->level = 10;
-	else grade->level = 99;
+	else if (grade->score >= 5000) grade->level = 8;
+	else if (grade->score >= 4500) grade->level = 7;
+	else if (grade->score >= 4000) grade->level = 6;
+	else if (grade->score >= 3000) grade->level = 5;
+	else if (grade->score >= 2000) grade->level = 4;
+	else if (grade->score >= 1000) grade->level = 3;
+	else if (grade->score >= 500) grade->level = 2;
+
 }
 
 int main()
