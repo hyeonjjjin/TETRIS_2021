@@ -381,6 +381,7 @@ int main()
 	int topOfFixedMino = 27;
 
 	while (1) {
+		rewind(stdin);
 		CheckKeyAndAction(&current, &location, &speedUp, &setNextMino);
 		rewind(stdin);
 		AutoDownMino(&current, location, &setNextMino);
@@ -409,6 +410,9 @@ int main()
 			setNextMino = 0;
 
 			//버퍼비우기
+			rewind(stdin);
+			rewind(stdin);
+			rewind(stdin);
 			rewind(stdin);
 		}
 		isClear = CheckLineClear(topOfFixedMino);
