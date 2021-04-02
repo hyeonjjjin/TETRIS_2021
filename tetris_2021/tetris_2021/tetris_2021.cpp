@@ -348,7 +348,6 @@ void CheckLevel(gradeInfo* grade) {
 	else if (grade->score >= 2000) grade->level = 4;
 	else if (grade->score >= 1000) grade->level = 3;
 	else if (grade->score >= 500) grade->level = 2;
-
 }
 
 int main()
